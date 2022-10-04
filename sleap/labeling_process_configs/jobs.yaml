@@ -1,0 +1,16 @@
+inference:
+- data_path: 831_labeled_frames_in_12_videos.slp
+  models:
+  - /home/alras16/sleap_training_data/models/train_on_65_labeled_frames_in_1_video220909_084323.centroid
+  - /home/alras16/sleap_training_data/models/train_on_65_labeled_frames_in_1_video220909_084323.centered_instance
+  only_suggested_frames: true
+  output_path: 831_labeled_frames_in_12_videos.slp.predictions.slp
+  tracking: {}
+  type: labels
+training:
+- cfg: centroid.json
+  run_path: /home/alras16/sleap_training_data/models/train_on_65_labeled_frames_in_1_video220909_084323.centroid
+  train_labels: 831_labeled_frames_in_12_videos.slp
+- cfg: centered_instance.json
+  run_path: /home/alras16/sleap_training_data/models/train_on_65_labeled_frames_in_1_video220909_084323.centered_instance
+  train_labels: 831_labeled_frames_in_12_videos.slp
