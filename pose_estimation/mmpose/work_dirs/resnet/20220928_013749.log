@@ -1,0 +1,1003 @@
+2022-09-28 01:37:49,812 - mmpose - INFO - Environment info:
+------------------------------------------------------------
+sys.platform: linux
+Python: 3.7.13 (default, Mar 29 2022, 02:18:16) [GCC 7.5.0]
+CUDA available: True
+GPU 0: NVIDIA TITAN X (Pascal)
+CUDA_HOME: /usr
+NVCC: Cuda compilation tools, release 10.1, V10.1.24
+GCC: gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0
+PyTorch: 1.8.0
+PyTorch compiling details: PyTorch built with:
+  - GCC 7.3
+  - C++ Version: 201402
+  - Intel(R) oneAPI Math Kernel Library Version 2021.4-Product Build 20210904 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v1.7.0 (Git Hash 7aed236906b1f7a05c0917e5257a1af05e9ff683)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 10.1
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_61,code=sm_61;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_37,code=compute_37
+  - CuDNN 7.6.3
+  - Magma 2.5.2
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=10.1, CUDNN_VERSION=7.6.3, CXX_COMPILER=/opt/rh/devtoolset-7/root/usr/bin/c++, CXX_FLAGS= -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_KINETO -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_VERSION=1.8.0, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, 
+
+TorchVision: 0.9.0
+OpenCV: 4.5.5
+MMCV: 1.5.2
+MMCV Compiler: GCC 9.4
+MMCV CUDA Compiler: 10.1
+MMPose: 0.26.0+212b0d9
+------------------------------------------------------------
+
+2022-09-28 01:37:49,813 - mmpose - INFO - Distributed training: False
+2022-09-28 01:37:51,994 - mmpose - INFO - Config:
+checkpoint_config = dict(interval=20)
+log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
+log_level = 'INFO'
+load_from = None
+resume_from = None
+dist_params = dict(backend='nccl')
+workflow = [('train', 1)]
+opencv_num_threads = 0
+mp_start_method = 'fork'
+dataset_info = dict(
+    dataset_name='harbor_porpoises',
+    paper_info=dict(
+        author='Alexander Rasmussen',
+        title='Detection and Tracking of Harbour Porpoises in UAV Recordings',
+        year='2022'),
+    keypoint_info=dict({
+        0:
+        dict(name='head', id=0, color=[191, 92, 77], type='upper', swap=''),
+        1:
+        dict(name='fin', id=1, color=[217, 145, 0], type='upper', swap=''),
+        2:
+        dict(
+            name='tail_base',
+            id=2,
+            color=[77, 128, 104],
+            type='lower',
+            swap=''),
+        3:
+        dict(
+            name='left_fluke',
+            id=3,
+            color=[51, 153, 255],
+            type='lower',
+            swap=''),
+        4:
+        dict(
+            name='right_fluke', id=4, color=[0, 255, 0], type='lower', swap='')
+    }),
+    skeleton_info=dict({
+        0:
+        dict(link=('fin', 'head'), id=0, color=[173, 127, 168]),
+        1:
+        dict(link=('fin', 'tail_base'), id=1, color=[173, 127, 168]),
+        3:
+        dict(link=('tail_base', 'left_fluke'), id=2, color=[173, 127, 168]),
+        4:
+        dict(link=('tail_base', 'right_fluke'), id=3, color=[173, 127, 168])
+    }),
+    joint_weights=[1.0, 1.0, 1.0, 1.0, 1.0],
+    sigmas=[0.072, 0.072, 0.072, 0.072, 0.072])
+evaluation = dict(interval=5, metric='mAP', save_best='AP')
+optimizer = dict(type='Adam', lr=0.0001, amsgrad=True)
+optimizer_config = dict(grad_clip=None)
+lr_config = dict(
+    policy='step',
+    warmup='linear',
+    warmup_iters=5,
+    warmup_ratio=0.01,
+    warmup_by_epoch=True,
+    step=[25, 50, 75])
+total_epochs = 100
+channel_cfg = dict(
+    dataset_joints=5,
+    dataset_channel=[[0, 1, 2, 3, 4]],
+    inference_channel=[0, 1, 2, 3, 4])
+data_cfg = dict(
+    image_size=512,
+    base_size=256,
+    base_sigma=2,
+    heatmap_size=[128],
+    num_joints=5,
+    dataset_channel=[[0, 1, 2, 3, 4]],
+    inference_channel=[0, 1, 2, 3, 4],
+    num_scales=1,
+    scale_aware_sigma=False)
+model = dict(
+    type='AssociativeEmbedding',
+    pretrained='torchvision://resnet50',
+    backbone=dict(type='ResNet', depth=50),
+    keypoint_head=dict(
+        type='AESimpleHead',
+        in_channels=2048,
+        num_joints=5,
+        tag_per_joint=True,
+        with_ae_loss=[True],
+        loss_keypoint=dict(
+            type='MultiLossFactory',
+            num_joints=5,
+            num_stages=1,
+            ae_loss_type='exp',
+            with_ae_loss=[True],
+            push_loss_factor=[0.001],
+            pull_loss_factor=[0.001],
+            with_heatmaps_loss=[True],
+            heatmaps_loss_factor=[1.0])),
+    train_cfg=dict(),
+    test_cfg=dict(
+        num_joints=5,
+        max_num_people=10,
+        scale_factor=[1],
+        with_heatmaps=[True],
+        with_ae=[True],
+        project2image=True,
+        align_corners=False,
+        nms_kernel=5,
+        nms_padding=2,
+        tag_per_joint=True,
+        detection_threshold=0.1,
+        tag_threshold=1,
+        use_detection_val=True,
+        ignore_too_much=False,
+        adjust=True,
+        refine=True,
+        flip_test=True))
+train_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(
+        type='BottomUpRandomAffine',
+        rot_factor=180,
+        scale_factor=[0.8, 1.2],
+        scale_type='short',
+        trans_factor=40),
+    dict(type='BottomUpRandomFlip', flip_prob=0.5),
+    dict(type='ToTensor'),
+    dict(
+        type='NormalizeTensor',
+        mean=[0.485, 0.456, 0.406],
+        std=[0.229, 0.224, 0.225]),
+    dict(type='BottomUpGenerateTarget', sigma=2, max_num_people=10),
+    dict(
+        type='Collect',
+        keys=['img', 'joints', 'targets', 'masks'],
+        meta_keys=[])
+]
+val_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='BottomUpGetImgSize', test_scale_factor=[1]),
+    dict(
+        type='BottomUpResizeAlign',
+        transforms=[
+            dict(type='ToTensor'),
+            dict(
+                type='NormalizeTensor',
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225])
+        ]),
+    dict(
+        type='Collect',
+        keys=['img'],
+        meta_keys=[
+            'image_file', 'aug_data', 'test_scale_factor', 'base_size',
+            'center', 'scale', 'flip_index'
+        ])
+]
+test_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='BottomUpGetImgSize', test_scale_factor=[1]),
+    dict(
+        type='BottomUpResizeAlign',
+        transforms=[
+            dict(type='ToTensor'),
+            dict(
+                type='NormalizeTensor',
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225])
+        ]),
+    dict(
+        type='Collect',
+        keys=['img'],
+        meta_keys=[
+            'image_file', 'aug_data', 'test_scale_factor', 'base_size',
+            'center', 'scale', 'flip_index'
+        ])
+]
+data_root = 'data'
+data = dict(
+    workers_per_gpu=1,
+    train_dataloader=dict(samples_per_gpu=4),
+    val_dataloader=dict(samples_per_gpu=1),
+    test_dataloader=dict(samples_per_gpu=1),
+    train=dict(
+        type='HarborPorpoisesBottomUpCocoDataset',
+        ann_file='data/annotations/train.json',
+        img_prefix='data/training/',
+        data_cfg=dict(
+            image_size=512,
+            base_size=256,
+            base_sigma=2,
+            heatmap_size=[128],
+            num_joints=5,
+            dataset_channel=[[0, 1, 2, 3, 4]],
+            inference_channel=[0, 1, 2, 3, 4],
+            num_scales=1,
+            scale_aware_sigma=False),
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='BottomUpRandomAffine',
+                rot_factor=180,
+                scale_factor=[0.8, 1.2],
+                scale_type='short',
+                trans_factor=40),
+            dict(type='BottomUpRandomFlip', flip_prob=0.5),
+            dict(type='ToTensor'),
+            dict(
+                type='NormalizeTensor',
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225]),
+            dict(type='BottomUpGenerateTarget', sigma=2, max_num_people=10),
+            dict(
+                type='Collect',
+                keys=['img', 'joints', 'targets', 'masks'],
+                meta_keys=[])
+        ],
+        dataset_info=dict(
+            dataset_name='harbor_porpoises',
+            paper_info=dict(
+                author='Alexander Rasmussen',
+                title=
+                'Detection and Tracking of Harbour Porpoises in UAV Recordings',
+                year='2022'),
+            keypoint_info=dict({
+                0:
+                dict(
+                    name='head',
+                    id=0,
+                    color=[191, 92, 77],
+                    type='upper',
+                    swap=''),
+                1:
+                dict(
+                    name='fin',
+                    id=1,
+                    color=[217, 145, 0],
+                    type='upper',
+                    swap=''),
+                2:
+                dict(
+                    name='tail_base',
+                    id=2,
+                    color=[77, 128, 104],
+                    type='lower',
+                    swap=''),
+                3:
+                dict(
+                    name='left_fluke',
+                    id=3,
+                    color=[51, 153, 255],
+                    type='lower',
+                    swap=''),
+                4:
+                dict(
+                    name='right_fluke',
+                    id=4,
+                    color=[0, 255, 0],
+                    type='lower',
+                    swap='')
+            }),
+            skeleton_info=dict({
+                0:
+                dict(link=('fin', 'head'), id=0, color=[173, 127, 168]),
+                1:
+                dict(link=('fin', 'tail_base'), id=1, color=[173, 127, 168]),
+                3:
+                dict(
+                    link=('tail_base', 'left_fluke'),
+                    id=2,
+                    color=[173, 127, 168]),
+                4:
+                dict(
+                    link=('tail_base', 'right_fluke'),
+                    id=3,
+                    color=[173, 127, 168])
+            }),
+            joint_weights=[1.0, 1.0, 1.0, 1.0, 1.0],
+            sigmas=[0.072, 0.072, 0.072, 0.072, 0.072])),
+    val=dict(
+        type='HarborPorpoisesBottomUpCocoDataset',
+        ann_file='data/annotations/val.json',
+        img_prefix='data/training/',
+        data_cfg=dict(
+            image_size=512,
+            base_size=256,
+            base_sigma=2,
+            heatmap_size=[128],
+            num_joints=5,
+            dataset_channel=[[0, 1, 2, 3, 4]],
+            inference_channel=[0, 1, 2, 3, 4],
+            num_scales=1,
+            scale_aware_sigma=False),
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(type='BottomUpGetImgSize', test_scale_factor=[1]),
+            dict(
+                type='BottomUpResizeAlign',
+                transforms=[
+                    dict(type='ToTensor'),
+                    dict(
+                        type='NormalizeTensor',
+                        mean=[0.485, 0.456, 0.406],
+                        std=[0.229, 0.224, 0.225])
+                ]),
+            dict(
+                type='Collect',
+                keys=['img'],
+                meta_keys=[
+                    'image_file', 'aug_data', 'test_scale_factor', 'base_size',
+                    'center', 'scale', 'flip_index'
+                ])
+        ],
+        dataset_info=dict(
+            dataset_name='harbor_porpoises',
+            paper_info=dict(
+                author='Alexander Rasmussen',
+                title=
+                'Detection and Tracking of Harbour Porpoises in UAV Recordings',
+                year='2022'),
+            keypoint_info=dict({
+                0:
+                dict(
+                    name='head',
+                    id=0,
+                    color=[191, 92, 77],
+                    type='upper',
+                    swap=''),
+                1:
+                dict(
+                    name='fin',
+                    id=1,
+                    color=[217, 145, 0],
+                    type='upper',
+                    swap=''),
+                2:
+                dict(
+                    name='tail_base',
+                    id=2,
+                    color=[77, 128, 104],
+                    type='lower',
+                    swap=''),
+                3:
+                dict(
+                    name='left_fluke',
+                    id=3,
+                    color=[51, 153, 255],
+                    type='lower',
+                    swap=''),
+                4:
+                dict(
+                    name='right_fluke',
+                    id=4,
+                    color=[0, 255, 0],
+                    type='lower',
+                    swap='')
+            }),
+            skeleton_info=dict({
+                0:
+                dict(link=('fin', 'head'), id=0, color=[173, 127, 168]),
+                1:
+                dict(link=('fin', 'tail_base'), id=1, color=[173, 127, 168]),
+                3:
+                dict(
+                    link=('tail_base', 'left_fluke'),
+                    id=2,
+                    color=[173, 127, 168]),
+                4:
+                dict(
+                    link=('tail_base', 'right_fluke'),
+                    id=3,
+                    color=[173, 127, 168])
+            }),
+            joint_weights=[1.0, 1.0, 1.0, 1.0, 1.0],
+            sigmas=[0.072, 0.072, 0.072, 0.072, 0.072])),
+    test=dict(
+        type='HarborPorpoisesBottomUpCocoDataset',
+        ann_file='data/annotations/val.json',
+        img_prefix='data/training/',
+        data_cfg=dict(
+            image_size=512,
+            base_size=256,
+            base_sigma=2,
+            heatmap_size=[128],
+            num_joints=5,
+            dataset_channel=[[0, 1, 2, 3, 4]],
+            inference_channel=[0, 1, 2, 3, 4],
+            num_scales=1,
+            scale_aware_sigma=False),
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(type='BottomUpGetImgSize', test_scale_factor=[1]),
+            dict(
+                type='BottomUpResizeAlign',
+                transforms=[
+                    dict(type='ToTensor'),
+                    dict(
+                        type='NormalizeTensor',
+                        mean=[0.485, 0.456, 0.406],
+                        std=[0.229, 0.224, 0.225])
+                ]),
+            dict(
+                type='Collect',
+                keys=['img'],
+                meta_keys=[
+                    'image_file', 'aug_data', 'test_scale_factor', 'base_size',
+                    'center', 'scale', 'flip_index'
+                ])
+        ],
+        dataset_info=dict(
+            dataset_name='harbor_porpoises',
+            paper_info=dict(
+                author='Alexander Rasmussen',
+                title=
+                'Detection and Tracking of Harbour Porpoises in UAV Recordings',
+                year='2022'),
+            keypoint_info=dict({
+                0:
+                dict(
+                    name='head',
+                    id=0,
+                    color=[191, 92, 77],
+                    type='upper',
+                    swap=''),
+                1:
+                dict(
+                    name='fin',
+                    id=1,
+                    color=[217, 145, 0],
+                    type='upper',
+                    swap=''),
+                2:
+                dict(
+                    name='tail_base',
+                    id=2,
+                    color=[77, 128, 104],
+                    type='lower',
+                    swap=''),
+                3:
+                dict(
+                    name='left_fluke',
+                    id=3,
+                    color=[51, 153, 255],
+                    type='lower',
+                    swap=''),
+                4:
+                dict(
+                    name='right_fluke',
+                    id=4,
+                    color=[0, 255, 0],
+                    type='lower',
+                    swap='')
+            }),
+            skeleton_info=dict({
+                0:
+                dict(link=('fin', 'head'), id=0, color=[173, 127, 168]),
+                1:
+                dict(link=('fin', 'tail_base'), id=1, color=[173, 127, 168]),
+                3:
+                dict(
+                    link=('tail_base', 'left_fluke'),
+                    id=2,
+                    color=[173, 127, 168]),
+                4:
+                dict(
+                    link=('tail_base', 'right_fluke'),
+                    id=3,
+                    color=[173, 127, 168])
+            }),
+            joint_weights=[1.0, 1.0, 1.0, 1.0, 1.0],
+            sigmas=[0.072, 0.072, 0.072, 0.072, 0.072])))
+work_dir = './work_dirs/resnet_harbor_porpoises'
+gpu_ids = [0]
+
+2022-09-28 01:37:51,995 - mmpose - INFO - Set random seed to 1889006560, deterministic: False
+2022-09-28 01:37:58,784 - mmpose - INFO - Start running, host: alras16@adm-59193, work_dir: /home/alras16/mmpose/work_dirs/resnet_harbor_porpoises
+2022-09-28 01:37:58,784 - mmpose - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) StepLrUpdaterHook                  
+(NORMAL      ) CheckpointHook                     
+(NORMAL      ) EvalHook                           
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) StepLrUpdaterHook                  
+(NORMAL      ) EvalHook                           
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) StepLrUpdaterHook                  
+(NORMAL      ) EvalHook                           
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_train_iter:
+(ABOVE_NORMAL) OptimizerHook                      
+(NORMAL      ) CheckpointHook                     
+(NORMAL      ) EvalHook                           
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) CheckpointHook                     
+(NORMAL      ) EvalHook                           
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_val_epoch:
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_epoch:
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+after_run:
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+2022-09-28 01:37:58,784 - mmpose - INFO - workflow: [('train', 1)], max: 100 epochs
+2022-09-28 01:37:58,785 - mmpose - INFO - Checkpoints will be saved to /home/alras16/mmpose/work_dirs/resnet_harbor_porpoises by HardDiskBackend.
+2022-09-28 01:38:47,266 - mmpose - INFO - Epoch [1][50/204]	lr: 5.756e-06, eta: 5:28:48, time: 0.969, data_time: 0.798, memory: 2670, heatmap_loss: 0.0011, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0013
+2022-09-28 01:39:31,515 - mmpose - INFO - Epoch [1][100/204]	lr: 1.061e-05, eta: 5:13:42, time: 0.885, data_time: 0.722, memory: 2670, heatmap_loss: 0.0010, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0013
+2022-09-28 01:40:14,421 - mmpose - INFO - Epoch [1][150/204]	lr: 1.546e-05, eta: 5:05:09, time: 0.858, data_time: 0.695, memory: 2670, heatmap_loss: 0.0009, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0011
+2022-09-28 01:40:59,571 - mmpose - INFO - Epoch [1][200/204]	lr: 2.031e-05, eta: 5:04:18, time: 0.903, data_time: 0.740, memory: 2670, heatmap_loss: 0.0009, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0012
+2022-09-28 01:41:47,003 - mmpose - INFO - Epoch [2][50/204]	lr: 2.556e-05, eta: 4:57:34, time: 0.887, data_time: 0.723, memory: 2670, heatmap_loss: 0.0008, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0011
+2022-09-28 01:42:34,608 - mmpose - INFO - Epoch [2][100/204]	lr: 3.041e-05, eta: 5:00:28, time: 0.952, data_time: 0.789, memory: 2670, heatmap_loss: 0.0008, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0010
+2022-09-28 01:43:24,949 - mmpose - INFO - Epoch [2][150/204]	lr: 3.526e-05, eta: 5:04:53, time: 1.007, data_time: 0.844, memory: 2670, heatmap_loss: 0.0007, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0010
+2022-09-28 01:44:10,667 - mmpose - INFO - Epoch [2][200/204]	lr: 4.011e-05, eta: 5:04:12, time: 0.914, data_time: 0.751, memory: 2670, heatmap_loss: 0.0007, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0010
+2022-09-28 01:45:04,264 - mmpose - INFO - Epoch [3][50/204]	lr: 4.536e-05, eta: 5:04:29, time: 1.016, data_time: 0.853, memory: 2670, heatmap_loss: 0.0007, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0009
+2022-09-28 01:45:48,261 - mmpose - INFO - Epoch [3][100/204]	lr: 5.021e-05, eta: 5:02:33, time: 0.880, data_time: 0.716, memory: 2670, heatmap_loss: 0.0007, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0009
+2022-09-28 01:46:34,467 - mmpose - INFO - Epoch [3][150/204]	lr: 5.506e-05, eta: 5:02:07, time: 0.924, data_time: 0.762, memory: 2670, heatmap_loss: 0.0006, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0009
+2022-09-28 01:47:24,018 - mmpose - INFO - Epoch [3][200/204]	lr: 5.991e-05, eta: 5:03:28, time: 0.991, data_time: 0.828, memory: 2670, heatmap_loss: 0.0006, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0008
+2022-09-28 01:48:18,487 - mmpose - INFO - Epoch [4][50/204]	lr: 6.516e-05, eta: 5:03:29, time: 1.028, data_time: 0.865, memory: 2670, heatmap_loss: 0.0006, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0008
+2022-09-28 01:49:08,080 - mmpose - INFO - Epoch [4][100/204]	lr: 7.001e-05, eta: 5:04:19, time: 0.992, data_time: 0.829, memory: 2670, heatmap_loss: 0.0005, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0008
+2022-09-28 01:49:56,798 - mmpose - INFO - Epoch [4][150/204]	lr: 7.486e-05, eta: 5:04:33, time: 0.974, data_time: 0.812, memory: 2670, heatmap_loss: 0.0006, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0008
+2022-09-28 01:50:46,232 - mmpose - INFO - Epoch [4][200/204]	lr: 7.971e-05, eta: 5:04:56, time: 0.989, data_time: 0.826, memory: 2670, heatmap_loss: 0.0005, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0008
+2022-09-28 01:51:37,752 - mmpose - INFO - Epoch [5][50/204]	lr: 8.496e-05, eta: 5:03:19, time: 0.967, data_time: 0.803, memory: 2670, heatmap_loss: 0.0005, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0007
+2022-09-28 01:52:25,284 - mmpose - INFO - Epoch [5][100/204]	lr: 8.981e-05, eta: 5:02:52, time: 0.951, data_time: 0.788, memory: 2670, heatmap_loss: 0.0005, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0008
+2022-09-28 01:53:13,349 - mmpose - INFO - Epoch [5][150/204]	lr: 9.466e-05, eta: 5:02:34, time: 0.961, data_time: 0.798, memory: 2670, heatmap_loss: 0.0006, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0008
+2022-09-28 01:53:51,812 - mmpose - INFO - Epoch [5][200/204]	lr: 9.951e-05, eta: 4:59:10, time: 0.769, data_time: 0.604, memory: 2670, heatmap_loss: 0.0005, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 01:55:28,107 - mmpose - INFO - Now best checkpoint is saved as best_AP_epoch_5.pth.
+2022-09-28 01:55:28,108 - mmpose - INFO - Best AP is 0.0269 at 5 epoch.
+2022-09-28 01:55:28,108 - mmpose - INFO - Epoch(val) [5][204]	AP: 0.0269, AP .5: 0.1224, AP .75: 0.0061, AP (M): 0.0102, AP (L): 0.0450, AR: 0.0937, AR .5: 0.3228, AR .75: 0.0315, AR (M): 0.0397, AR (L): 0.1335
+2022-09-28 01:56:15,826 - mmpose - INFO - Epoch [6][50/204]	lr: 1.000e-04, eta: 4:57:39, time: 0.954, data_time: 0.790, memory: 2670, heatmap_loss: 0.0006, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0008
+2022-09-28 01:57:01,034 - mmpose - INFO - Epoch [6][100/204]	lr: 1.000e-04, eta: 4:56:36, time: 0.904, data_time: 0.741, memory: 2670, heatmap_loss: 0.0005, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 01:57:46,575 - mmpose - INFO - Epoch [6][150/204]	lr: 1.000e-04, eta: 4:55:39, time: 0.911, data_time: 0.747, memory: 2670, heatmap_loss: 0.0005, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0007
+2022-09-28 01:58:31,773 - mmpose - INFO - Epoch [6][200/204]	lr: 1.000e-04, eta: 4:54:39, time: 0.904, data_time: 0.741, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 01:59:22,879 - mmpose - INFO - Epoch [7][50/204]	lr: 1.000e-04, eta: 4:53:23, time: 0.961, data_time: 0.798, memory: 2670, heatmap_loss: 0.0005, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:00:08,222 - mmpose - INFO - Epoch [7][100/204]	lr: 1.000e-04, eta: 4:52:27, time: 0.907, data_time: 0.744, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:00:53,433 - mmpose - INFO - Epoch [7][150/204]	lr: 1.000e-04, eta: 4:51:30, time: 0.904, data_time: 0.742, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:01:38,854 - mmpose - INFO - Epoch [7][200/204]	lr: 1.000e-04, eta: 4:50:37, time: 0.908, data_time: 0.746, memory: 2670, heatmap_loss: 0.0005, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:02:30,169 - mmpose - INFO - Epoch [8][50/204]	lr: 1.000e-04, eta: 4:49:29, time: 0.964, data_time: 0.800, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:03:15,181 - mmpose - INFO - Epoch [8][100/204]	lr: 1.000e-04, eta: 4:48:32, time: 0.900, data_time: 0.737, memory: 2670, heatmap_loss: 0.0005, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0007
+2022-09-28 02:03:59,756 - mmpose - INFO - Epoch [8][150/204]	lr: 1.000e-04, eta: 4:47:31, time: 0.891, data_time: 0.728, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:04:44,762 - mmpose - INFO - Epoch [8][200/204]	lr: 1.000e-04, eta: 4:46:36, time: 0.900, data_time: 0.738, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:05:35,424 - mmpose - INFO - Epoch [9][50/204]	lr: 1.000e-04, eta: 4:45:26, time: 0.952, data_time: 0.789, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:06:20,720 - mmpose - INFO - Epoch [9][100/204]	lr: 1.000e-04, eta: 4:44:35, time: 0.906, data_time: 0.743, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:07:04,756 - mmpose - INFO - Epoch [9][150/204]	lr: 1.000e-04, eta: 4:43:31, time: 0.881, data_time: 0.718, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:07:49,329 - mmpose - INFO - Epoch [9][200/204]	lr: 1.000e-04, eta: 4:42:34, time: 0.891, data_time: 0.729, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:08:39,822 - mmpose - INFO - Epoch [10][50/204]	lr: 1.000e-04, eta: 4:41:27, time: 0.950, data_time: 0.787, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:09:24,965 - mmpose - INFO - Epoch [10][100/204]	lr: 1.000e-04, eta: 4:40:37, time: 0.903, data_time: 0.740, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:10:10,230 - mmpose - INFO - Epoch [10][150/204]	lr: 1.000e-04, eta: 4:39:49, time: 0.905, data_time: 0.742, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0002, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:10:55,516 - mmpose - INFO - Epoch [10][200/204]	lr: 1.000e-04, eta: 4:39:00, time: 0.906, data_time: 0.743, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:12:10,382 - mmpose - INFO - The previous best checkpoint /home/alras16/mmpose/work_dirs/resnet_harbor_porpoises/best_AP_epoch_5.pth was removed
+2022-09-28 02:12:11,514 - mmpose - INFO - Now best checkpoint is saved as best_AP_epoch_10.pth.
+2022-09-28 02:12:11,515 - mmpose - INFO - Best AP is 0.0775 at 10 epoch.
+2022-09-28 02:12:11,515 - mmpose - INFO - Epoch(val) [10][204]	AP: 0.0775, AP .5: 0.2967, AP .75: 0.0149, AP (M): 0.0341, AP (L): 0.1410, AR: 0.1772, AR .5: 0.4987, AR .75: 0.1024, AR (M): 0.0919, AR (L): 0.2423
+2022-09-28 02:12:56,797 - mmpose - INFO - Epoch [11][50/204]	lr: 1.000e-04, eta: 4:37:36, time: 0.905, data_time: 0.742, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:13:42,045 - mmpose - INFO - Epoch [11][100/204]	lr: 1.000e-04, eta: 4:36:49, time: 0.905, data_time: 0.742, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:14:27,905 - mmpose - INFO - Epoch [11][150/204]	lr: 1.000e-04, eta: 4:36:07, time: 0.917, data_time: 0.754, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:15:13,565 - mmpose - INFO - Epoch [11][200/204]	lr: 1.000e-04, eta: 4:35:22, time: 0.913, data_time: 0.750, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:16:03,925 - mmpose - INFO - Epoch [12][50/204]	lr: 1.000e-04, eta: 4:34:19, time: 0.947, data_time: 0.784, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:16:49,721 - mmpose - INFO - Epoch [12][100/204]	lr: 1.000e-04, eta: 4:33:36, time: 0.916, data_time: 0.753, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:17:34,901 - mmpose - INFO - Epoch [12][150/204]	lr: 1.000e-04, eta: 4:32:49, time: 0.904, data_time: 0.741, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:18:20,077 - mmpose - INFO - Epoch [12][200/204]	lr: 1.000e-04, eta: 4:32:01, time: 0.903, data_time: 0.740, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:19:06,924 - mmpose - INFO - Epoch [13][50/204]	lr: 1.000e-04, eta: 4:30:35, time: 0.878, data_time: 0.714, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:19:52,342 - mmpose - INFO - Epoch [13][100/204]	lr: 1.000e-04, eta: 4:29:50, time: 0.908, data_time: 0.745, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:20:37,817 - mmpose - INFO - Epoch [13][150/204]	lr: 1.000e-04, eta: 4:29:05, time: 0.909, data_time: 0.747, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:21:22,886 - mmpose - INFO - Epoch [13][200/204]	lr: 1.000e-04, eta: 4:28:18, time: 0.901, data_time: 0.739, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:22:12,022 - mmpose - INFO - Epoch [14][50/204]	lr: 1.000e-04, eta: 4:27:10, time: 0.920, data_time: 0.757, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:22:55,064 - mmpose - INFO - Epoch [14][100/204]	lr: 1.000e-04, eta: 4:26:10, time: 0.861, data_time: 0.698, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:23:40,678 - mmpose - INFO - Epoch [14][150/204]	lr: 1.000e-04, eta: 4:25:27, time: 0.912, data_time: 0.750, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:24:26,093 - mmpose - INFO - Epoch [14][200/204]	lr: 1.000e-04, eta: 4:24:43, time: 0.908, data_time: 0.745, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:25:16,807 - mmpose - INFO - Epoch [15][50/204]	lr: 1.000e-04, eta: 4:23:47, time: 0.955, data_time: 0.791, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:26:02,610 - mmpose - INFO - Epoch [15][100/204]	lr: 1.000e-04, eta: 4:23:05, time: 0.916, data_time: 0.753, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:26:40,098 - mmpose - INFO - Epoch [15][150/204]	lr: 1.000e-04, eta: 4:21:35, time: 0.750, data_time: 0.586, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0006
+2022-09-28 02:27:22,522 - mmpose - INFO - Epoch [15][200/204]	lr: 1.000e-04, eta: 4:20:35, time: 0.848, data_time: 0.685, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:28:46,854 - mmpose - INFO - The previous best checkpoint /home/alras16/mmpose/work_dirs/resnet_harbor_porpoises/best_AP_epoch_10.pth was removed
+2022-09-28 02:28:48,569 - mmpose - INFO - Now best checkpoint is saved as best_AP_epoch_15.pth.
+2022-09-28 02:28:48,569 - mmpose - INFO - Best AP is 0.1139 at 15 epoch.
+2022-09-28 02:28:48,570 - mmpose - INFO - Epoch(val) [15][204]	AP: 0.1139, AP .5: 0.3901, AP .75: 0.0164, AP (M): 0.0500, AP (L): 0.2047, AR: 0.2115, AR .5: 0.5486, AR .75: 0.1102, AR (M): 0.0949, AR (L): 0.2982
+2022-09-28 02:29:36,635 - mmpose - INFO - Epoch [16][50/204]	lr: 1.000e-04, eta: 4:19:43, time: 0.961, data_time: 0.798, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:30:22,467 - mmpose - INFO - Epoch [16][100/204]	lr: 1.000e-04, eta: 4:19:02, time: 0.917, data_time: 0.753, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:31:08,274 - mmpose - INFO - Epoch [16][150/204]	lr: 1.000e-04, eta: 4:18:21, time: 0.916, data_time: 0.753, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:31:53,196 - mmpose - INFO - Epoch [16][200/204]	lr: 1.000e-04, eta: 4:17:35, time: 0.898, data_time: 0.736, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:32:41,138 - mmpose - INFO - Epoch [17][50/204]	lr: 1.000e-04, eta: 4:16:27, time: 0.899, data_time: 0.735, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:33:22,903 - mmpose - INFO - Epoch [17][100/204]	lr: 1.000e-04, eta: 4:15:25, time: 0.835, data_time: 0.673, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:34:07,285 - mmpose - INFO - Epoch [17][150/204]	lr: 1.000e-04, eta: 4:14:37, time: 0.888, data_time: 0.724, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:34:52,780 - mmpose - INFO - Epoch [17][200/204]	lr: 1.000e-04, eta: 4:13:55, time: 0.910, data_time: 0.747, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:35:43,502 - mmpose - INFO - Epoch [18][50/204]	lr: 1.000e-04, eta: 4:13:02, time: 0.955, data_time: 0.792, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 02:36:28,899 - mmpose - INFO - Epoch [18][100/204]	lr: 1.000e-04, eta: 4:12:19, time: 0.908, data_time: 0.745, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:37:13,830 - mmpose - INFO - Epoch [18][150/204]	lr: 1.000e-04, eta: 4:11:34, time: 0.899, data_time: 0.736, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:37:59,352 - mmpose - INFO - Epoch [18][200/204]	lr: 1.000e-04, eta: 4:10:52, time: 0.910, data_time: 0.747, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:38:50,952 - mmpose - INFO - Epoch [19][50/204]	lr: 1.000e-04, eta: 4:10:03, time: 0.970, data_time: 0.806, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:39:36,399 - mmpose - INFO - Epoch [19][100/204]	lr: 1.000e-04, eta: 4:09:20, time: 0.909, data_time: 0.746, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:40:22,111 - mmpose - INFO - Epoch [19][150/204]	lr: 1.000e-04, eta: 4:08:38, time: 0.914, data_time: 0.751, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:41:07,329 - mmpose - INFO - Epoch [19][200/204]	lr: 1.000e-04, eta: 4:07:54, time: 0.904, data_time: 0.742, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:41:58,001 - mmpose - INFO - Epoch [20][50/204]	lr: 1.000e-04, eta: 4:07:01, time: 0.953, data_time: 0.789, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:42:42,870 - mmpose - INFO - Epoch [20][100/204]	lr: 1.000e-04, eta: 4:06:16, time: 0.897, data_time: 0.735, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:43:27,659 - mmpose - INFO - Epoch [20][150/204]	lr: 1.000e-04, eta: 4:05:30, time: 0.896, data_time: 0.733, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 02:44:12,687 - mmpose - INFO - Epoch [20][200/204]	lr: 1.000e-04, eta: 4:04:45, time: 0.901, data_time: 0.738, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:44:15,745 - mmpose - INFO - Saving checkpoint at 20 epochs
+2022-09-28 02:46:07,496 - mmpose - INFO - The previous best checkpoint /home/alras16/mmpose/work_dirs/resnet_harbor_porpoises/best_AP_epoch_15.pth was removed
+2022-09-28 02:46:09,082 - mmpose - INFO - Now best checkpoint is saved as best_AP_epoch_20.pth.
+2022-09-28 02:46:09,082 - mmpose - INFO - Best AP is 0.1193 at 20 epoch.
+2022-09-28 02:46:09,083 - mmpose - INFO - Epoch(val) [20][204]	AP: 0.1193, AP .5: 0.3914, AP .75: 0.0211, AP (M): 0.0728, AP (L): 0.1931, AR: 0.2241, AR .5: 0.5643, AR .75: 0.1286, AR (M): 0.1206, AR (L): 0.3040
+2022-09-28 02:46:54,857 - mmpose - INFO - Epoch [21][50/204]	lr: 1.000e-04, eta: 4:03:45, time: 0.915, data_time: 0.750, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:47:37,601 - mmpose - INFO - Epoch [21][100/204]	lr: 1.000e-04, eta: 4:02:52, time: 0.855, data_time: 0.692, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 02:48:23,102 - mmpose - INFO - Epoch [21][150/204]	lr: 1.000e-04, eta: 4:02:09, time: 0.910, data_time: 0.747, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 02:49:08,036 - mmpose - INFO - Epoch [21][200/204]	lr: 1.000e-04, eta: 4:01:24, time: 0.899, data_time: 0.735, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:49:52,230 - mmpose - INFO - Epoch [22][50/204]	lr: 1.000e-04, eta: 4:00:08, time: 0.822, data_time: 0.658, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:50:37,684 - mmpose - INFO - Epoch [22][100/204]	lr: 1.000e-04, eta: 3:59:26, time: 0.909, data_time: 0.745, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:51:22,179 - mmpose - INFO - Epoch [22][150/204]	lr: 1.000e-04, eta: 3:58:40, time: 0.890, data_time: 0.727, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 02:52:06,904 - mmpose - INFO - Epoch [22][200/204]	lr: 1.000e-04, eta: 3:57:54, time: 0.894, data_time: 0.731, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:52:56,042 - mmpose - INFO - Epoch [23][50/204]	lr: 1.000e-04, eta: 3:56:58, time: 0.924, data_time: 0.761, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 02:53:40,521 - mmpose - INFO - Epoch [23][100/204]	lr: 1.000e-04, eta: 3:56:12, time: 0.890, data_time: 0.726, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 02:54:26,323 - mmpose - INFO - Epoch [23][150/204]	lr: 1.000e-04, eta: 3:55:31, time: 0.916, data_time: 0.753, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:55:11,801 - mmpose - INFO - Epoch [23][200/204]	lr: 1.000e-04, eta: 3:54:48, time: 0.910, data_time: 0.746, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:56:02,498 - mmpose - INFO - Epoch [24][50/204]	lr: 1.000e-04, eta: 3:53:57, time: 0.955, data_time: 0.791, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:56:48,160 - mmpose - INFO - Epoch [24][100/204]	lr: 1.000e-04, eta: 3:53:15, time: 0.913, data_time: 0.750, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 02:57:33,849 - mmpose - INFO - Epoch [24][150/204]	lr: 1.000e-04, eta: 3:52:33, time: 0.914, data_time: 0.750, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 02:58:18,426 - mmpose - INFO - Epoch [24][200/204]	lr: 1.000e-04, eta: 3:51:47, time: 0.892, data_time: 0.729, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 02:59:08,629 - mmpose - INFO - Epoch [25][50/204]	lr: 1.000e-04, eta: 3:50:57, time: 0.958, data_time: 0.795, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 02:59:54,070 - mmpose - INFO - Epoch [25][100/204]	lr: 1.000e-04, eta: 3:50:14, time: 0.909, data_time: 0.747, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 03:00:39,911 - mmpose - INFO - Epoch [25][150/204]	lr: 1.000e-04, eta: 3:49:33, time: 0.917, data_time: 0.753, memory: 2670, heatmap_loss: 0.0004, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 03:01:25,957 - mmpose - INFO - Epoch [25][200/204]	lr: 1.000e-04, eta: 3:48:51, time: 0.921, data_time: 0.758, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0005
+2022-09-28 03:03:19,774 - mmpose - INFO - The previous best checkpoint /home/alras16/mmpose/work_dirs/resnet_harbor_porpoises/best_AP_epoch_20.pth was removed
+2022-09-28 03:03:21,330 - mmpose - INFO - Now best checkpoint is saved as best_AP_epoch_25.pth.
+2022-09-28 03:03:21,331 - mmpose - INFO - Best AP is 0.1297 at 25 epoch.
+2022-09-28 03:03:21,331 - mmpose - INFO - Epoch(val) [25][204]	AP: 0.1297, AP .5: 0.4128, AP .75: 0.0329, AP (M): 0.0673, AP (L): 0.2325, AR: 0.2373, AR .5: 0.5827, AR .75: 0.1549, AR (M): 0.1346, AR (L): 0.3176
+2022-09-28 03:04:08,675 - mmpose - INFO - Epoch [26][50/204]	lr: 1.000e-05, eta: 3:47:59, time: 0.947, data_time: 0.784, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:04:51,725 - mmpose - INFO - Epoch [26][100/204]	lr: 1.000e-05, eta: 3:47:09, time: 0.861, data_time: 0.698, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:05:36,903 - mmpose - INFO - Epoch [26][150/204]	lr: 1.000e-05, eta: 3:46:26, time: 0.904, data_time: 0.740, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:06:21,847 - mmpose - INFO - Epoch [26][200/204]	lr: 1.000e-05, eta: 3:45:41, time: 0.899, data_time: 0.736, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:07:09,335 - mmpose - INFO - Epoch [27][50/204]	lr: 1.000e-05, eta: 3:44:41, time: 0.886, data_time: 0.722, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:07:54,213 - mmpose - INFO - Epoch [27][100/204]	lr: 1.000e-05, eta: 3:43:56, time: 0.898, data_time: 0.735, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:08:38,953 - mmpose - INFO - Epoch [27][150/204]	lr: 1.000e-05, eta: 3:43:11, time: 0.895, data_time: 0.732, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:09:22,686 - mmpose - INFO - Epoch [27][200/204]	lr: 1.000e-05, eta: 3:42:24, time: 0.875, data_time: 0.711, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:10:13,034 - mmpose - INFO - Epoch [28][50/204]	lr: 1.000e-05, eta: 3:41:34, time: 0.959, data_time: 0.796, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:10:56,772 - mmpose - INFO - Epoch [28][100/204]	lr: 1.000e-05, eta: 3:40:47, time: 0.875, data_time: 0.713, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:11:42,086 - mmpose - INFO - Epoch [28][150/204]	lr: 1.000e-05, eta: 3:40:03, time: 0.906, data_time: 0.744, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:12:27,769 - mmpose - INFO - Epoch [28][200/204]	lr: 1.000e-05, eta: 3:39:21, time: 0.914, data_time: 0.751, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:13:17,697 - mmpose - INFO - Epoch [29][50/204]	lr: 1.000e-05, eta: 3:38:29, time: 0.939, data_time: 0.776, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:14:00,538 - mmpose - INFO - Epoch [29][100/204]	lr: 1.000e-05, eta: 3:37:39, time: 0.857, data_time: 0.694, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 03:14:45,495 - mmpose - INFO - Epoch [29][150/204]	lr: 1.000e-05, eta: 3:36:55, time: 0.899, data_time: 0.736, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:15:27,008 - mmpose - INFO - Epoch [29][200/204]	lr: 1.000e-05, eta: 3:36:02, time: 0.830, data_time: 0.667, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:16:17,759 - mmpose - INFO - Epoch [30][50/204]	lr: 1.000e-05, eta: 3:35:12, time: 0.955, data_time: 0.791, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 03:17:04,081 - mmpose - INFO - Epoch [30][100/204]	lr: 1.000e-05, eta: 3:34:31, time: 0.926, data_time: 0.764, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:17:49,085 - mmpose - INFO - Epoch [30][150/204]	lr: 1.000e-05, eta: 3:33:47, time: 0.900, data_time: 0.737, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:18:34,429 - mmpose - INFO - Epoch [30][200/204]	lr: 1.000e-05, eta: 3:33:04, time: 0.907, data_time: 0.744, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:19:44,091 - mmpose - INFO - The previous best checkpoint /home/alras16/mmpose/work_dirs/resnet_harbor_porpoises/best_AP_epoch_25.pth was removed
+2022-09-28 03:19:45,883 - mmpose - INFO - Now best checkpoint is saved as best_AP_epoch_30.pth.
+2022-09-28 03:19:45,883 - mmpose - INFO - Best AP is 0.1619 at 30 epoch.
+2022-09-28 03:19:45,884 - mmpose - INFO - Epoch(val) [30][204]	AP: 0.1619, AP .5: 0.5087, AP .75: 0.0418, AP (M): 0.0979, AP (L): 0.2840, AR: 0.2748, AR .5: 0.6535, AR .75: 0.1811, AR (M): 0.1537, AR (L): 0.3692
+2022-09-28 03:20:34,045 - mmpose - INFO - Epoch [31][50/204]	lr: 1.000e-05, eta: 3:32:15, time: 0.963, data_time: 0.800, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:21:19,649 - mmpose - INFO - Epoch [31][100/204]	lr: 1.000e-05, eta: 3:31:32, time: 0.912, data_time: 0.750, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:22:02,888 - mmpose - INFO - Epoch [31][150/204]	lr: 1.000e-05, eta: 3:30:44, time: 0.865, data_time: 0.702, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 03:22:47,765 - mmpose - INFO - Epoch [31][200/204]	lr: 1.000e-05, eta: 3:30:00, time: 0.898, data_time: 0.735, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:23:37,976 - mmpose - INFO - Epoch [32][50/204]	lr: 1.000e-05, eta: 3:29:09, time: 0.945, data_time: 0.781, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:24:23,707 - mmpose - INFO - Epoch [32][100/204]	lr: 1.000e-05, eta: 3:28:26, time: 0.915, data_time: 0.751, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:25:09,049 - mmpose - INFO - Epoch [32][150/204]	lr: 1.000e-05, eta: 3:27:43, time: 0.907, data_time: 0.744, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:25:54,854 - mmpose - INFO - Epoch [32][200/204]	lr: 1.000e-05, eta: 3:27:00, time: 0.916, data_time: 0.754, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:26:43,489 - mmpose - INFO - Epoch [33][50/204]	lr: 1.000e-05, eta: 3:26:06, time: 0.912, data_time: 0.749, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 03:27:29,032 - mmpose - INFO - Epoch [33][100/204]	lr: 1.000e-05, eta: 3:25:23, time: 0.911, data_time: 0.748, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 03:28:13,952 - mmpose - INFO - Epoch [33][150/204]	lr: 1.000e-05, eta: 3:24:39, time: 0.898, data_time: 0.735, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:28:59,512 - mmpose - INFO - Epoch [33][200/204]	lr: 1.000e-05, eta: 3:23:56, time: 0.911, data_time: 0.748, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:29:50,580 - mmpose - INFO - Epoch [34][50/204]	lr: 1.000e-05, eta: 3:23:07, time: 0.959, data_time: 0.795, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:30:36,027 - mmpose - INFO - Epoch [34][100/204]	lr: 1.000e-05, eta: 3:22:23, time: 0.909, data_time: 0.746, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:31:21,727 - mmpose - INFO - Epoch [34][150/204]	lr: 1.000e-05, eta: 3:21:41, time: 0.914, data_time: 0.751, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:32:07,175 - mmpose - INFO - Epoch [34][200/204]	lr: 1.000e-05, eta: 3:20:57, time: 0.909, data_time: 0.746, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:32:57,061 - mmpose - INFO - Epoch [35][50/204]	lr: 1.000e-05, eta: 3:20:06, time: 0.939, data_time: 0.776, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 03:33:42,906 - mmpose - INFO - Epoch [35][100/204]	lr: 1.000e-05, eta: 3:19:23, time: 0.917, data_time: 0.754, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:34:27,720 - mmpose - INFO - Epoch [35][150/204]	lr: 1.000e-05, eta: 3:18:39, time: 0.896, data_time: 0.733, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:35:10,040 - mmpose - INFO - Epoch [35][200/204]	lr: 1.000e-05, eta: 3:17:49, time: 0.846, data_time: 0.684, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:36:14,717 - mmpose - INFO - The previous best checkpoint /home/alras16/mmpose/work_dirs/resnet_harbor_porpoises/best_AP_epoch_30.pth was removed
+2022-09-28 03:36:16,022 - mmpose - INFO - Now best checkpoint is saved as best_AP_epoch_35.pth.
+2022-09-28 03:36:16,022 - mmpose - INFO - Best AP is 0.1805 at 35 epoch.
+2022-09-28 03:36:16,023 - mmpose - INFO - Epoch(val) [35][204]	AP: 0.1805, AP .5: 0.5613, AP .75: 0.0534, AP (M): 0.1146, AP (L): 0.3132, AR: 0.2955, AR .5: 0.6903, AR .75: 0.2047, AR (M): 0.1750, AR (L): 0.3912
+2022-09-28 03:37:03,947 - mmpose - INFO - Epoch [36][50/204]	lr: 1.000e-05, eta: 3:17:00, time: 0.958, data_time: 0.795, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:37:49,279 - mmpose - INFO - Epoch [36][100/204]	lr: 1.000e-05, eta: 3:16:17, time: 0.907, data_time: 0.744, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:38:34,572 - mmpose - INFO - Epoch [36][150/204]	lr: 1.000e-05, eta: 3:15:33, time: 0.906, data_time: 0.744, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 03:39:20,051 - mmpose - INFO - Epoch [36][200/204]	lr: 1.000e-05, eta: 3:14:49, time: 0.910, data_time: 0.747, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:40:09,680 - mmpose - INFO - Epoch [37][50/204]	lr: 1.000e-05, eta: 3:13:58, time: 0.931, data_time: 0.768, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:40:54,818 - mmpose - INFO - Epoch [37][100/204]	lr: 1.000e-05, eta: 3:13:14, time: 0.903, data_time: 0.740, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:41:32,035 - mmpose - INFO - Epoch [37][150/204]	lr: 1.000e-05, eta: 3:12:16, time: 0.744, data_time: 0.581, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:42:17,589 - mmpose - INFO - Epoch [37][200/204]	lr: 1.000e-05, eta: 3:11:33, time: 0.911, data_time: 0.748, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:43:08,156 - mmpose - INFO - Epoch [38][50/204]	lr: 1.000e-05, eta: 3:10:44, time: 0.953, data_time: 0.790, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 03:43:52,480 - mmpose - INFO - Epoch [38][100/204]	lr: 1.000e-05, eta: 3:09:58, time: 0.886, data_time: 0.724, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 03:44:37,160 - mmpose - INFO - Epoch [38][150/204]	lr: 1.000e-05, eta: 3:09:14, time: 0.894, data_time: 0.730, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:45:22,419 - mmpose - INFO - Epoch [38][200/204]	lr: 1.000e-05, eta: 3:08:30, time: 0.905, data_time: 0.742, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:46:13,554 - mmpose - INFO - Epoch [39][50/204]	lr: 1.000e-05, eta: 3:07:41, time: 0.962, data_time: 0.798, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:46:58,418 - mmpose - INFO - Epoch [39][100/204]	lr: 1.000e-05, eta: 3:06:57, time: 0.897, data_time: 0.734, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 03:47:43,862 - mmpose - INFO - Epoch [39][150/204]	lr: 1.000e-05, eta: 3:06:13, time: 0.909, data_time: 0.746, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 03:48:29,814 - mmpose - INFO - Epoch [39][200/204]	lr: 1.000e-05, eta: 3:05:31, time: 0.919, data_time: 0.756, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:49:18,381 - mmpose - INFO - Epoch [40][50/204]	lr: 1.000e-05, eta: 3:04:38, time: 0.913, data_time: 0.749, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:50:03,293 - mmpose - INFO - Epoch [40][100/204]	lr: 1.000e-05, eta: 3:03:54, time: 0.898, data_time: 0.735, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 03:50:48,898 - mmpose - INFO - Epoch [40][150/204]	lr: 1.000e-05, eta: 3:03:11, time: 0.912, data_time: 0.749, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:51:33,749 - mmpose - INFO - Epoch [40][200/204]	lr: 1.000e-05, eta: 3:02:26, time: 0.897, data_time: 0.735, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 03:51:36,896 - mmpose - INFO - Saving checkpoint at 40 epochs
+2022-09-28 03:52:39,284 - mmpose - INFO - The previous best checkpoint /home/alras16/mmpose/work_dirs/resnet_harbor_porpoises/best_AP_epoch_35.pth was removed
+2022-09-28 03:52:40,673 - mmpose - INFO - Now best checkpoint is saved as best_AP_epoch_40.pth.
+2022-09-28 03:52:40,674 - mmpose - INFO - Best AP is 0.2030 at 40 epoch.
+2022-09-28 03:52:40,674 - mmpose - INFO - Epoch(val) [40][204]	AP: 0.2030, AP .5: 0.5910, AP .75: 0.0666, AP (M): 0.1200, AP (L): 0.3522, AR: 0.3160, AR .5: 0.7060, AR .75: 0.2336, AR (M): 0.1853, AR (L): 0.4194
+2022-09-28 03:53:28,762 - mmpose - INFO - Epoch [41][50/204]	lr: 1.000e-05, eta: 3:01:37, time: 0.962, data_time: 0.798, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:54:13,977 - mmpose - INFO - Epoch [41][100/204]	lr: 1.000e-05, eta: 3:00:54, time: 0.904, data_time: 0.741, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 03:54:56,488 - mmpose - INFO - Epoch [41][150/204]	lr: 1.000e-05, eta: 3:00:06, time: 0.850, data_time: 0.688, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 03:55:40,835 - mmpose - INFO - Epoch [41][200/204]	lr: 1.000e-05, eta: 2:59:20, time: 0.887, data_time: 0.725, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:56:27,253 - mmpose - INFO - Epoch [42][50/204]	lr: 1.000e-05, eta: 2:58:25, time: 0.865, data_time: 0.702, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 03:57:12,758 - mmpose - INFO - Epoch [42][100/204]	lr: 1.000e-05, eta: 2:57:42, time: 0.910, data_time: 0.747, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:57:57,682 - mmpose - INFO - Epoch [42][150/204]	lr: 1.000e-05, eta: 2:56:57, time: 0.898, data_time: 0.736, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:58:43,370 - mmpose - INFO - Epoch [42][200/204]	lr: 1.000e-05, eta: 2:56:14, time: 0.914, data_time: 0.751, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 03:59:34,413 - mmpose - INFO - Epoch [43][50/204]	lr: 1.000e-05, eta: 2:55:26, time: 0.963, data_time: 0.800, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:00:20,122 - mmpose - INFO - Epoch [43][100/204]	lr: 1.000e-05, eta: 2:54:42, time: 0.914, data_time: 0.751, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:01:02,709 - mmpose - INFO - Epoch [43][150/204]	lr: 1.000e-05, eta: 2:53:55, time: 0.852, data_time: 0.689, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:01:47,733 - mmpose - INFO - Epoch [43][200/204]	lr: 1.000e-05, eta: 2:53:11, time: 0.900, data_time: 0.737, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:02:38,653 - mmpose - INFO - Epoch [44][50/204]	lr: 1.000e-05, eta: 2:52:22, time: 0.959, data_time: 0.796, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:03:23,764 - mmpose - INFO - Epoch [44][100/204]	lr: 1.000e-05, eta: 2:51:38, time: 0.902, data_time: 0.739, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:04:07,609 - mmpose - INFO - Epoch [44][150/204]	lr: 1.000e-05, eta: 2:50:52, time: 0.877, data_time: 0.714, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:04:50,661 - mmpose - INFO - Epoch [44][200/204]	lr: 1.000e-05, eta: 2:50:06, time: 0.861, data_time: 0.698, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:05:40,103 - mmpose - INFO - Epoch [45][50/204]	lr: 1.000e-05, eta: 2:49:15, time: 0.929, data_time: 0.766, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:06:25,493 - mmpose - INFO - Epoch [45][100/204]	lr: 1.000e-05, eta: 2:48:31, time: 0.908, data_time: 0.745, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:07:10,754 - mmpose - INFO - Epoch [45][150/204]	lr: 1.000e-05, eta: 2:47:48, time: 0.905, data_time: 0.743, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:07:56,426 - mmpose - INFO - Epoch [45][200/204]	lr: 1.000e-05, eta: 2:47:04, time: 0.913, data_time: 0.750, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:08:59,855 - mmpose - INFO - Epoch(val) [45][204]	AP: 0.1772, AP .5: 0.5408, AP .75: 0.0480, AP (M): 0.1157, AP (L): 0.2999, AR: 0.2919, AR .5: 0.6824, AR .75: 0.2047, AR (M): 0.1860, AR (L): 0.3784
+2022-09-28 04:09:48,044 - mmpose - INFO - Epoch [46][50/204]	lr: 1.000e-05, eta: 2:46:16, time: 0.964, data_time: 0.800, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:10:33,465 - mmpose - INFO - Epoch [46][100/204]	lr: 1.000e-05, eta: 2:45:32, time: 0.908, data_time: 0.746, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:11:19,147 - mmpose - INFO - Epoch [46][150/204]	lr: 1.000e-05, eta: 2:44:49, time: 0.914, data_time: 0.751, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:12:04,461 - mmpose - INFO - Epoch [46][200/204]	lr: 1.000e-05, eta: 2:44:05, time: 0.906, data_time: 0.743, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:12:54,725 - mmpose - INFO - Epoch [47][50/204]	lr: 1.000e-05, eta: 2:43:16, time: 0.954, data_time: 0.791, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:13:38,943 - mmpose - INFO - Epoch [47][100/204]	lr: 1.000e-05, eta: 2:42:31, time: 0.884, data_time: 0.722, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:14:24,375 - mmpose - INFO - Epoch [47][150/204]	lr: 1.000e-05, eta: 2:41:47, time: 0.909, data_time: 0.745, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:15:09,456 - mmpose - INFO - Epoch [47][200/204]	lr: 1.000e-05, eta: 2:41:03, time: 0.902, data_time: 0.739, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:15:53,795 - mmpose - INFO - Epoch [48][50/204]	lr: 1.000e-05, eta: 2:40:07, time: 0.826, data_time: 0.663, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:16:38,998 - mmpose - INFO - Epoch [48][100/204]	lr: 1.000e-05, eta: 2:39:23, time: 0.904, data_time: 0.741, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:17:24,620 - mmpose - INFO - Epoch [48][150/204]	lr: 1.000e-05, eta: 2:38:39, time: 0.912, data_time: 0.749, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:18:07,926 - mmpose - INFO - Epoch [48][200/204]	lr: 1.000e-05, eta: 2:37:53, time: 0.866, data_time: 0.703, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:18:54,509 - mmpose - INFO - Epoch [49][50/204]	lr: 1.000e-05, eta: 2:37:00, time: 0.871, data_time: 0.707, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:19:39,745 - mmpose - INFO - Epoch [49][100/204]	lr: 1.000e-05, eta: 2:36:16, time: 0.905, data_time: 0.742, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:20:25,521 - mmpose - INFO - Epoch [49][150/204]	lr: 1.000e-05, eta: 2:35:32, time: 0.916, data_time: 0.753, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:21:11,019 - mmpose - INFO - Epoch [49][200/204]	lr: 1.000e-05, eta: 2:34:49, time: 0.910, data_time: 0.747, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:22:01,773 - mmpose - INFO - Epoch [50][50/204]	lr: 1.000e-05, eta: 2:34:00, time: 0.955, data_time: 0.792, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:22:46,936 - mmpose - INFO - Epoch [50][100/204]	lr: 1.000e-05, eta: 2:33:16, time: 0.903, data_time: 0.741, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:23:32,024 - mmpose - INFO - Epoch [50][150/204]	lr: 1.000e-05, eta: 2:32:32, time: 0.902, data_time: 0.739, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:24:17,394 - mmpose - INFO - Epoch [50][200/204]	lr: 1.000e-05, eta: 2:31:48, time: 0.907, data_time: 0.744, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:25:21,328 - mmpose - INFO - Epoch(val) [50][204]	AP: 0.1717, AP .5: 0.5240, AP .75: 0.0507, AP (M): 0.1051, AP (L): 0.3083, AR: 0.2984, AR .5: 0.6798, AR .75: 0.2178, AR (M): 0.1765, AR (L): 0.3952
+2022-09-28 04:26:01,853 - mmpose - INFO - Epoch [51][50/204]	lr: 1.000e-06, eta: 2:30:52, time: 0.810, data_time: 0.647, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:26:42,562 - mmpose - INFO - Epoch [51][100/204]	lr: 1.000e-06, eta: 2:30:04, time: 0.814, data_time: 0.651, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:27:27,510 - mmpose - INFO - Epoch [51][150/204]	lr: 1.000e-06, eta: 2:29:20, time: 0.899, data_time: 0.736, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:28:12,191 - mmpose - INFO - Epoch [51][200/204]	lr: 1.000e-06, eta: 2:28:35, time: 0.894, data_time: 0.731, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:29:00,641 - mmpose - INFO - Epoch [52][50/204]	lr: 1.000e-06, eta: 2:27:44, time: 0.909, data_time: 0.746, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:29:41,787 - mmpose - INFO - Epoch [52][100/204]	lr: 1.000e-06, eta: 2:26:57, time: 0.823, data_time: 0.659, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:30:17,356 - mmpose - INFO - Epoch [52][150/204]	lr: 1.000e-06, eta: 2:26:04, time: 0.711, data_time: 0.547, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:30:56,867 - mmpose - INFO - Epoch [52][200/204]	lr: 1.000e-06, eta: 2:25:15, time: 0.790, data_time: 0.627, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:31:45,009 - mmpose - INFO - Epoch [53][50/204]	lr: 1.000e-06, eta: 2:24:24, time: 0.915, data_time: 0.750, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:32:29,822 - mmpose - INFO - Epoch [53][100/204]	lr: 1.000e-06, eta: 2:23:40, time: 0.896, data_time: 0.732, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:33:15,385 - mmpose - INFO - Epoch [53][150/204]	lr: 1.000e-06, eta: 2:22:57, time: 0.911, data_time: 0.748, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:34:00,687 - mmpose - INFO - Epoch [53][200/204]	lr: 1.000e-06, eta: 2:22:13, time: 0.906, data_time: 0.743, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:34:51,756 - mmpose - INFO - Epoch [54][50/204]	lr: 1.000e-06, eta: 2:21:25, time: 0.961, data_time: 0.797, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:35:34,787 - mmpose - INFO - Epoch [54][100/204]	lr: 1.000e-06, eta: 2:20:39, time: 0.861, data_time: 0.697, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:36:20,098 - mmpose - INFO - Epoch [54][150/204]	lr: 1.000e-06, eta: 2:19:55, time: 0.906, data_time: 0.743, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:37:04,654 - mmpose - INFO - Epoch [54][200/204]	lr: 1.000e-06, eta: 2:19:11, time: 0.891, data_time: 0.728, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:37:53,296 - mmpose - INFO - Epoch [55][50/204]	lr: 1.000e-06, eta: 2:18:21, time: 0.910, data_time: 0.747, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:38:34,921 - mmpose - INFO - Epoch [55][100/204]	lr: 1.000e-06, eta: 2:17:34, time: 0.832, data_time: 0.670, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:39:20,432 - mmpose - INFO - Epoch [55][150/204]	lr: 1.000e-06, eta: 2:16:50, time: 0.910, data_time: 0.748, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:40:06,011 - mmpose - INFO - Epoch [55][200/204]	lr: 1.000e-06, eta: 2:16:07, time: 0.912, data_time: 0.748, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:41:10,716 - mmpose - INFO - Epoch(val) [55][204]	AP: 0.1700, AP .5: 0.5210, AP .75: 0.0532, AP (M): 0.1029, AP (L): 0.3054, AR: 0.2958, AR .5: 0.6693, AR .75: 0.2126, AR (M): 0.1728, AR (L): 0.3930
+2022-09-28 04:41:58,325 - mmpose - INFO - Epoch [56][50/204]	lr: 1.000e-06, eta: 2:15:19, time: 0.952, data_time: 0.788, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:42:43,785 - mmpose - INFO - Epoch [56][100/204]	lr: 1.000e-06, eta: 2:14:35, time: 0.909, data_time: 0.746, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:43:29,618 - mmpose - INFO - Epoch [56][150/204]	lr: 1.000e-06, eta: 2:13:51, time: 0.917, data_time: 0.755, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:44:14,682 - mmpose - INFO - Epoch [56][200/204]	lr: 1.000e-06, eta: 2:13:07, time: 0.901, data_time: 0.739, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:45:05,518 - mmpose - INFO - Epoch [57][50/204]	lr: 1.000e-06, eta: 2:12:19, time: 0.957, data_time: 0.793, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:45:50,818 - mmpose - INFO - Epoch [57][100/204]	lr: 1.000e-06, eta: 2:11:35, time: 0.906, data_time: 0.743, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:46:36,361 - mmpose - INFO - Epoch [57][150/204]	lr: 1.000e-06, eta: 2:10:52, time: 0.911, data_time: 0.748, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:47:21,988 - mmpose - INFO - Epoch [57][200/204]	lr: 1.000e-06, eta: 2:10:08, time: 0.913, data_time: 0.750, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:48:13,135 - mmpose - INFO - Epoch [58][50/204]	lr: 1.000e-06, eta: 2:09:20, time: 0.962, data_time: 0.799, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:48:58,369 - mmpose - INFO - Epoch [58][100/204]	lr: 1.000e-06, eta: 2:08:36, time: 0.905, data_time: 0.742, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:49:43,810 - mmpose - INFO - Epoch [58][150/204]	lr: 1.000e-06, eta: 2:07:52, time: 0.909, data_time: 0.746, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:50:29,106 - mmpose - INFO - Epoch [58][200/204]	lr: 1.000e-06, eta: 2:07:08, time: 0.906, data_time: 0.743, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:51:19,294 - mmpose - INFO - Epoch [59][50/204]	lr: 1.000e-06, eta: 2:06:20, time: 0.943, data_time: 0.780, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:52:04,634 - mmpose - INFO - Epoch [59][100/204]	lr: 1.000e-06, eta: 2:05:36, time: 0.907, data_time: 0.745, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:52:50,215 - mmpose - INFO - Epoch [59][150/204]	lr: 1.000e-06, eta: 2:04:52, time: 0.912, data_time: 0.748, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:53:35,102 - mmpose - INFO - Epoch [59][200/204]	lr: 1.000e-06, eta: 2:04:08, time: 0.898, data_time: 0.735, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:54:25,970 - mmpose - INFO - Epoch [60][50/204]	lr: 1.000e-06, eta: 2:03:20, time: 0.957, data_time: 0.794, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 04:55:11,323 - mmpose - INFO - Epoch [60][100/204]	lr: 1.000e-06, eta: 2:02:36, time: 0.907, data_time: 0.745, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:55:56,180 - mmpose - INFO - Epoch [60][150/204]	lr: 1.000e-06, eta: 2:01:52, time: 0.897, data_time: 0.735, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:56:41,526 - mmpose - INFO - Epoch [60][200/204]	lr: 1.000e-06, eta: 2:01:08, time: 0.907, data_time: 0.744, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:56:44,630 - mmpose - INFO - Saving checkpoint at 60 epochs
+2022-09-28 04:57:47,788 - mmpose - INFO - Epoch(val) [60][204]	AP: 0.1847, AP .5: 0.5601, AP .75: 0.0560, AP (M): 0.1183, AP (L): 0.3284, AR: 0.3031, AR .5: 0.6929, AR .75: 0.2205, AR (M): 0.1816, AR (L): 0.4000
+2022-09-28 04:58:35,487 - mmpose - INFO - Epoch [61][50/204]	lr: 1.000e-06, eta: 2:00:19, time: 0.954, data_time: 0.791, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 04:59:20,871 - mmpose - INFO - Epoch [61][100/204]	lr: 1.000e-06, eta: 1:59:35, time: 0.908, data_time: 0.744, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:00:06,617 - mmpose - INFO - Epoch [61][150/204]	lr: 1.000e-06, eta: 1:58:52, time: 0.915, data_time: 0.752, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:00:52,136 - mmpose - INFO - Epoch [61][200/204]	lr: 1.000e-06, eta: 1:58:08, time: 0.910, data_time: 0.748, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:01:42,907 - mmpose - INFO - Epoch [62][50/204]	lr: 1.000e-06, eta: 1:57:19, time: 0.952, data_time: 0.789, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:02:28,365 - mmpose - INFO - Epoch [62][100/204]	lr: 1.000e-06, eta: 1:56:35, time: 0.909, data_time: 0.747, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:03:14,310 - mmpose - INFO - Epoch [62][150/204]	lr: 1.000e-06, eta: 1:55:52, time: 0.919, data_time: 0.756, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:03:59,693 - mmpose - INFO - Epoch [62][200/204]	lr: 1.000e-06, eta: 1:55:08, time: 0.908, data_time: 0.745, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:04:48,160 - mmpose - INFO - Epoch [63][50/204]	lr: 1.000e-06, eta: 1:54:18, time: 0.908, data_time: 0.744, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:05:34,083 - mmpose - INFO - Epoch [63][100/204]	lr: 1.000e-06, eta: 1:53:34, time: 0.918, data_time: 0.756, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:06:15,732 - mmpose - INFO - Epoch [63][150/204]	lr: 1.000e-06, eta: 1:52:48, time: 0.833, data_time: 0.669, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:06:59,738 - mmpose - INFO - Epoch [63][200/204]	lr: 1.000e-06, eta: 1:52:03, time: 0.880, data_time: 0.717, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:07:50,459 - mmpose - INFO - Epoch [64][50/204]	lr: 1.000e-06, eta: 1:51:15, time: 0.955, data_time: 0.792, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:08:35,274 - mmpose - INFO - Epoch [64][100/204]	lr: 1.000e-06, eta: 1:50:31, time: 0.896, data_time: 0.733, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:09:18,625 - mmpose - INFO - Epoch [64][150/204]	lr: 1.000e-06, eta: 1:49:45, time: 0.867, data_time: 0.704, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:09:59,597 - mmpose - INFO - Epoch [64][200/204]	lr: 1.000e-06, eta: 1:48:59, time: 0.819, data_time: 0.656, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:10:50,202 - mmpose - INFO - Epoch [65][50/204]	lr: 1.000e-06, eta: 1:48:11, time: 0.951, data_time: 0.787, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:11:35,871 - mmpose - INFO - Epoch [65][100/204]	lr: 1.000e-06, eta: 1:47:27, time: 0.913, data_time: 0.750, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:12:21,062 - mmpose - INFO - Epoch [65][150/204]	lr: 1.000e-06, eta: 1:46:43, time: 0.904, data_time: 0.740, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:13:06,930 - mmpose - INFO - Epoch [65][200/204]	lr: 1.000e-06, eta: 1:45:59, time: 0.917, data_time: 0.754, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:14:09,622 - mmpose - INFO - Epoch(val) [65][204]	AP: 0.1889, AP .5: 0.5747, AP .75: 0.0532, AP (M): 0.1249, AP (L): 0.3250, AR: 0.3024, AR .5: 0.6929, AR .75: 0.2126, AR (M): 0.1912, AR (L): 0.3930
+2022-09-28 05:14:58,123 - mmpose - INFO - Epoch [66][50/204]	lr: 1.000e-06, eta: 1:45:11, time: 0.970, data_time: 0.807, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:15:44,048 - mmpose - INFO - Epoch [66][100/204]	lr: 1.000e-06, eta: 1:44:27, time: 0.918, data_time: 0.756, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:16:28,348 - mmpose - INFO - Epoch [66][150/204]	lr: 1.000e-06, eta: 1:43:43, time: 0.886, data_time: 0.723, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:17:14,187 - mmpose - INFO - Epoch [66][200/204]	lr: 1.000e-06, eta: 1:42:59, time: 0.917, data_time: 0.754, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:18:05,168 - mmpose - INFO - Epoch [67][50/204]	lr: 1.000e-06, eta: 1:42:11, time: 0.960, data_time: 0.796, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:18:50,561 - mmpose - INFO - Epoch [67][100/204]	lr: 1.000e-06, eta: 1:41:27, time: 0.908, data_time: 0.745, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:19:36,418 - mmpose - INFO - Epoch [67][150/204]	lr: 1.000e-06, eta: 1:40:43, time: 0.917, data_time: 0.754, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:20:22,427 - mmpose - INFO - Epoch [67][200/204]	lr: 1.000e-06, eta: 1:39:59, time: 0.920, data_time: 0.758, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:21:12,038 - mmpose - INFO - Epoch [68][50/204]	lr: 1.000e-06, eta: 1:39:10, time: 0.931, data_time: 0.768, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:21:57,422 - mmpose - INFO - Epoch [68][100/204]	lr: 1.000e-06, eta: 1:38:26, time: 0.908, data_time: 0.744, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:22:40,888 - mmpose - INFO - Epoch [68][150/204]	lr: 1.000e-06, eta: 1:37:41, time: 0.869, data_time: 0.706, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:23:24,588 - mmpose - INFO - Epoch [68][200/204]	lr: 1.000e-06, eta: 1:36:56, time: 0.874, data_time: 0.712, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:24:14,575 - mmpose - INFO - Epoch [69][50/204]	lr: 1.000e-06, eta: 1:36:07, time: 0.938, data_time: 0.774, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:24:59,814 - mmpose - INFO - Epoch [69][100/204]	lr: 1.000e-06, eta: 1:35:23, time: 0.905, data_time: 0.742, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:25:44,974 - mmpose - INFO - Epoch [69][150/204]	lr: 1.000e-06, eta: 1:34:39, time: 0.903, data_time: 0.740, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:26:29,972 - mmpose - INFO - Epoch [69][200/204]	lr: 1.000e-06, eta: 1:33:55, time: 0.900, data_time: 0.737, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:27:20,906 - mmpose - INFO - Epoch [70][50/204]	lr: 1.000e-06, eta: 1:33:06, time: 0.959, data_time: 0.797, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:28:06,595 - mmpose - INFO - Epoch [70][100/204]	lr: 1.000e-06, eta: 1:32:22, time: 0.914, data_time: 0.751, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:28:51,534 - mmpose - INFO - Epoch [70][150/204]	lr: 1.000e-06, eta: 1:31:38, time: 0.899, data_time: 0.736, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:29:36,805 - mmpose - INFO - Epoch [70][200/204]	lr: 1.000e-06, eta: 1:30:54, time: 0.905, data_time: 0.742, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:30:40,365 - mmpose - INFO - Epoch(val) [70][204]	AP: 0.1705, AP .5: 0.5073, AP .75: 0.0436, AP (M): 0.1055, AP (L): 0.3034, AR: 0.2919, AR .5: 0.6693, AR .75: 0.1969, AR (M): 0.1721, AR (L): 0.3868
+2022-09-28 05:31:28,264 - mmpose - INFO - Epoch [71][50/204]	lr: 1.000e-06, eta: 1:30:06, time: 0.958, data_time: 0.794, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:32:13,709 - mmpose - INFO - Epoch [71][100/204]	lr: 1.000e-06, eta: 1:29:22, time: 0.909, data_time: 0.746, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:32:55,302 - mmpose - INFO - Epoch [71][150/204]	lr: 1.000e-06, eta: 1:28:36, time: 0.832, data_time: 0.669, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:33:35,422 - mmpose - INFO - Epoch [71][200/204]	lr: 1.000e-06, eta: 1:27:49, time: 0.802, data_time: 0.639, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:34:26,134 - mmpose - INFO - Epoch [72][50/204]	lr: 1.000e-06, eta: 1:27:01, time: 0.965, data_time: 0.801, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:35:11,675 - mmpose - INFO - Epoch [72][100/204]	lr: 1.000e-06, eta: 1:26:17, time: 0.911, data_time: 0.748, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:35:52,185 - mmpose - INFO - Epoch [72][150/204]	lr: 1.000e-06, eta: 1:25:31, time: 0.810, data_time: 0.646, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:36:32,103 - mmpose - INFO - Epoch [72][200/204]	lr: 1.000e-06, eta: 1:24:45, time: 0.798, data_time: 0.635, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:37:22,211 - mmpose - INFO - Epoch [73][50/204]	lr: 1.000e-06, eta: 1:23:57, time: 0.941, data_time: 0.778, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:38:07,741 - mmpose - INFO - Epoch [73][100/204]	lr: 1.000e-06, eta: 1:23:13, time: 0.911, data_time: 0.748, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:38:53,393 - mmpose - INFO - Epoch [73][150/204]	lr: 1.000e-06, eta: 1:22:28, time: 0.913, data_time: 0.749, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:39:38,793 - mmpose - INFO - Epoch [73][200/204]	lr: 1.000e-06, eta: 1:21:44, time: 0.908, data_time: 0.745, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:40:30,558 - mmpose - INFO - Epoch [74][50/204]	lr: 1.000e-06, eta: 1:20:56, time: 0.972, data_time: 0.808, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:41:15,886 - mmpose - INFO - Epoch [74][100/204]	lr: 1.000e-06, eta: 1:20:12, time: 0.907, data_time: 0.743, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:42:01,590 - mmpose - INFO - Epoch [74][150/204]	lr: 1.000e-06, eta: 1:19:28, time: 0.914, data_time: 0.751, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:42:46,816 - mmpose - INFO - Epoch [74][200/204]	lr: 1.000e-06, eta: 1:18:44, time: 0.905, data_time: 0.741, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:43:38,037 - mmpose - INFO - Epoch [75][50/204]	lr: 1.000e-06, eta: 1:17:56, time: 0.963, data_time: 0.799, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:44:24,175 - mmpose - INFO - Epoch [75][100/204]	lr: 1.000e-06, eta: 1:17:12, time: 0.923, data_time: 0.759, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:45:09,006 - mmpose - INFO - Epoch [75][150/204]	lr: 1.000e-06, eta: 1:16:28, time: 0.897, data_time: 0.734, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:45:54,132 - mmpose - INFO - Epoch [75][200/204]	lr: 1.000e-06, eta: 1:15:43, time: 0.902, data_time: 0.739, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:46:56,398 - mmpose - INFO - Epoch(val) [75][204]	AP: 0.1757, AP .5: 0.5255, AP .75: 0.0458, AP (M): 0.1068, AP (L): 0.3125, AR: 0.2940, AR .5: 0.6667, AR .75: 0.1995, AR (M): 0.1706, AR (L): 0.3912
+2022-09-28 05:47:44,695 - mmpose - INFO - Epoch [76][50/204]	lr: 1.000e-07, eta: 1:14:55, time: 0.966, data_time: 0.802, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:48:30,726 - mmpose - INFO - Epoch [76][100/204]	lr: 1.000e-07, eta: 1:14:11, time: 0.921, data_time: 0.757, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:49:14,659 - mmpose - INFO - Epoch [76][150/204]	lr: 1.000e-07, eta: 1:13:27, time: 0.879, data_time: 0.716, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:49:59,030 - mmpose - INFO - Epoch [76][200/204]	lr: 1.000e-07, eta: 1:12:42, time: 0.887, data_time: 0.725, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:50:49,500 - mmpose - INFO - Epoch [77][50/204]	lr: 1.000e-07, eta: 1:11:54, time: 0.961, data_time: 0.798, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:51:35,414 - mmpose - INFO - Epoch [77][100/204]	lr: 1.000e-07, eta: 1:11:10, time: 0.918, data_time: 0.755, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:52:20,775 - mmpose - INFO - Epoch [77][150/204]	lr: 1.000e-07, eta: 1:10:26, time: 0.907, data_time: 0.745, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:53:06,091 - mmpose - INFO - Epoch [77][200/204]	lr: 1.000e-07, eta: 1:09:41, time: 0.906, data_time: 0.744, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:53:57,698 - mmpose - INFO - Epoch [78][50/204]	lr: 1.000e-07, eta: 1:08:53, time: 0.971, data_time: 0.808, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:54:43,508 - mmpose - INFO - Epoch [78][100/204]	lr: 1.000e-07, eta: 1:08:09, time: 0.916, data_time: 0.753, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:55:29,473 - mmpose - INFO - Epoch [78][150/204]	lr: 1.000e-07, eta: 1:07:25, time: 0.919, data_time: 0.756, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:56:15,358 - mmpose - INFO - Epoch [78][200/204]	lr: 1.000e-07, eta: 1:06:41, time: 0.918, data_time: 0.754, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:57:06,731 - mmpose - INFO - Epoch [79][50/204]	lr: 1.000e-07, eta: 1:05:53, time: 0.967, data_time: 0.804, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 05:57:52,270 - mmpose - INFO - Epoch [79][100/204]	lr: 1.000e-07, eta: 1:05:09, time: 0.911, data_time: 0.748, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:58:37,987 - mmpose - INFO - Epoch [79][150/204]	lr: 1.000e-07, eta: 1:04:24, time: 0.914, data_time: 0.751, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 05:59:23,975 - mmpose - INFO - Epoch [79][200/204]	lr: 1.000e-07, eta: 1:03:40, time: 0.920, data_time: 0.757, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:00:15,037 - mmpose - INFO - Epoch [80][50/204]	lr: 1.000e-07, eta: 1:02:52, time: 0.960, data_time: 0.797, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:00:58,211 - mmpose - INFO - Epoch [80][100/204]	lr: 1.000e-07, eta: 1:02:07, time: 0.863, data_time: 0.700, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:01:43,351 - mmpose - INFO - Epoch [80][150/204]	lr: 1.000e-07, eta: 1:01:23, time: 0.903, data_time: 0.739, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:02:29,044 - mmpose - INFO - Epoch [80][200/204]	lr: 1.000e-07, eta: 1:00:38, time: 0.914, data_time: 0.751, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:02:32,006 - mmpose - INFO - Saving checkpoint at 80 epochs
+2022-09-28 06:03:35,866 - mmpose - INFO - Epoch(val) [80][204]	AP: 0.1829, AP .5: 0.5414, AP .75: 0.0514, AP (M): 0.1060, AP (L): 0.3238, AR: 0.3029, AR .5: 0.6824, AR .75: 0.2152, AR (M): 0.1721, AR (L): 0.4053
+2022-09-28 06:04:24,655 - mmpose - INFO - Epoch [81][50/204]	lr: 1.000e-07, eta: 0:59:51, time: 0.976, data_time: 0.812, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:05:05,067 - mmpose - INFO - Epoch [81][100/204]	lr: 1.000e-07, eta: 0:59:05, time: 0.808, data_time: 0.645, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:05:49,457 - mmpose - INFO - Epoch [81][150/204]	lr: 1.000e-07, eta: 0:58:20, time: 0.888, data_time: 0.725, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:06:33,949 - mmpose - INFO - Epoch [81][200/204]	lr: 1.000e-07, eta: 0:57:36, time: 0.890, data_time: 0.726, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:07:24,339 - mmpose - INFO - Epoch [82][50/204]	lr: 1.000e-07, eta: 0:56:48, time: 0.947, data_time: 0.783, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:08:09,858 - mmpose - INFO - Epoch [82][100/204]	lr: 1.000e-07, eta: 0:56:03, time: 0.910, data_time: 0.747, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:08:54,687 - mmpose - INFO - Epoch [82][150/204]	lr: 1.000e-07, eta: 0:55:19, time: 0.897, data_time: 0.734, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:09:40,375 - mmpose - INFO - Epoch [82][200/204]	lr: 1.000e-07, eta: 0:54:34, time: 0.914, data_time: 0.751, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:10:30,841 - mmpose - INFO - Epoch [83][50/204]	lr: 1.000e-07, eta: 0:53:46, time: 0.953, data_time: 0.790, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:11:16,362 - mmpose - INFO - Epoch [83][100/204]	lr: 1.000e-07, eta: 0:53:02, time: 0.910, data_time: 0.748, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:12:00,636 - mmpose - INFO - Epoch [83][150/204]	lr: 1.000e-07, eta: 0:52:17, time: 0.885, data_time: 0.723, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:12:40,048 - mmpose - INFO - Epoch [83][200/204]	lr: 1.000e-07, eta: 0:51:32, time: 0.788, data_time: 0.625, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:13:26,942 - mmpose - INFO - Epoch [84][50/204]	lr: 1.000e-07, eta: 0:50:43, time: 0.873, data_time: 0.709, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:14:12,507 - mmpose - INFO - Epoch [84][100/204]	lr: 1.000e-07, eta: 0:49:58, time: 0.911, data_time: 0.748, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:14:54,246 - mmpose - INFO - Epoch [84][150/204]	lr: 1.000e-07, eta: 0:49:13, time: 0.835, data_time: 0.671, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:15:29,873 - mmpose - INFO - Epoch [84][200/204]	lr: 1.000e-07, eta: 0:48:27, time: 0.712, data_time: 0.548, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:16:19,856 - mmpose - INFO - Epoch [85][50/204]	lr: 1.000e-07, eta: 0:47:39, time: 0.952, data_time: 0.788, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:17:05,798 - mmpose - INFO - Epoch [85][100/204]	lr: 1.000e-07, eta: 0:46:55, time: 0.919, data_time: 0.756, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:17:51,559 - mmpose - INFO - Epoch [85][150/204]	lr: 1.000e-07, eta: 0:46:11, time: 0.915, data_time: 0.752, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:18:37,103 - mmpose - INFO - Epoch [85][200/204]	lr: 1.000e-07, eta: 0:45:26, time: 0.911, data_time: 0.748, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:19:40,553 - mmpose - INFO - Epoch(val) [85][204]	AP: 0.1898, AP .5: 0.5502, AP .75: 0.0642, AP (M): 0.1083, AP (L): 0.3391, AR: 0.3110, AR .5: 0.6903, AR .75: 0.2362, AR (M): 0.1757, AR (L): 0.4167
+2022-09-28 06:20:25,305 - mmpose - INFO - Epoch [86][50/204]	lr: 1.000e-07, eta: 0:44:38, time: 0.895, data_time: 0.732, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:21:10,841 - mmpose - INFO - Epoch [86][100/204]	lr: 1.000e-07, eta: 0:43:53, time: 0.911, data_time: 0.747, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:21:56,644 - mmpose - INFO - Epoch [86][150/204]	lr: 1.000e-07, eta: 0:43:09, time: 0.916, data_time: 0.753, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:22:41,816 - mmpose - INFO - Epoch [86][200/204]	lr: 1.000e-07, eta: 0:42:25, time: 0.903, data_time: 0.741, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:23:32,334 - mmpose - INFO - Epoch [87][50/204]	lr: 1.000e-07, eta: 0:41:37, time: 0.950, data_time: 0.787, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:24:17,774 - mmpose - INFO - Epoch [87][100/204]	lr: 1.000e-07, eta: 0:40:52, time: 0.909, data_time: 0.746, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:25:02,945 - mmpose - INFO - Epoch [87][150/204]	lr: 1.000e-07, eta: 0:40:08, time: 0.903, data_time: 0.741, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:25:48,432 - mmpose - INFO - Epoch [87][200/204]	lr: 1.000e-07, eta: 0:39:23, time: 0.910, data_time: 0.747, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:26:39,303 - mmpose - INFO - Epoch [88][50/204]	lr: 1.000e-07, eta: 0:38:35, time: 0.957, data_time: 0.795, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:27:24,651 - mmpose - INFO - Epoch [88][100/204]	lr: 1.000e-07, eta: 0:37:51, time: 0.907, data_time: 0.744, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:28:10,546 - mmpose - INFO - Epoch [88][150/204]	lr: 1.000e-07, eta: 0:37:07, time: 0.918, data_time: 0.755, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:28:55,941 - mmpose - INFO - Epoch [88][200/204]	lr: 1.000e-07, eta: 0:36:22, time: 0.908, data_time: 0.745, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:29:45,177 - mmpose - INFO - Epoch [89][50/204]	lr: 1.000e-07, eta: 0:35:34, time: 0.924, data_time: 0.760, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:30:30,559 - mmpose - INFO - Epoch [89][100/204]	lr: 1.000e-07, eta: 0:34:50, time: 0.908, data_time: 0.745, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:31:15,984 - mmpose - INFO - Epoch [89][150/204]	lr: 1.000e-07, eta: 0:34:05, time: 0.908, data_time: 0.747, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:32:01,247 - mmpose - INFO - Epoch [89][200/204]	lr: 1.000e-07, eta: 0:33:21, time: 0.905, data_time: 0.743, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:32:49,564 - mmpose - INFO - Epoch [90][50/204]	lr: 1.000e-07, eta: 0:32:32, time: 0.908, data_time: 0.744, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:33:34,703 - mmpose - INFO - Epoch [90][100/204]	lr: 1.000e-07, eta: 0:31:48, time: 0.903, data_time: 0.740, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:34:16,482 - mmpose - INFO - Epoch [90][150/204]	lr: 1.000e-07, eta: 0:31:03, time: 0.836, data_time: 0.672, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:35:02,221 - mmpose - INFO - Epoch [90][200/204]	lr: 1.000e-07, eta: 0:30:19, time: 0.915, data_time: 0.751, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:36:05,231 - mmpose - INFO - Epoch(val) [90][204]	AP: 0.1807, AP .5: 0.5393, AP .75: 0.0562, AP (M): 0.1179, AP (L): 0.3149, AR: 0.3047, AR .5: 0.6772, AR .75: 0.2257, AR (M): 0.1735, AR (L): 0.4075
+2022-09-28 06:36:52,750 - mmpose - INFO - Epoch [91][50/204]	lr: 1.000e-07, eta: 0:29:31, time: 0.950, data_time: 0.787, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:37:38,218 - mmpose - INFO - Epoch [91][100/204]	lr: 1.000e-07, eta: 0:28:46, time: 0.909, data_time: 0.746, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:38:20,471 - mmpose - INFO - Epoch [91][150/204]	lr: 1.000e-07, eta: 0:28:01, time: 0.845, data_time: 0.683, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:39:02,878 - mmpose - INFO - Epoch [91][200/204]	lr: 1.000e-07, eta: 0:27:17, time: 0.848, data_time: 0.685, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:39:52,740 - mmpose - INFO - Epoch [92][50/204]	lr: 1.000e-07, eta: 0:26:29, time: 0.951, data_time: 0.787, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:40:38,387 - mmpose - INFO - Epoch [92][100/204]	lr: 1.000e-07, eta: 0:25:44, time: 0.913, data_time: 0.750, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:41:23,789 - mmpose - INFO - Epoch [92][150/204]	lr: 1.000e-07, eta: 0:25:00, time: 0.908, data_time: 0.745, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:42:09,039 - mmpose - INFO - Epoch [92][200/204]	lr: 1.000e-07, eta: 0:24:15, time: 0.905, data_time: 0.741, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:42:59,870 - mmpose - INFO - Epoch [93][50/204]	lr: 1.000e-07, eta: 0:23:27, time: 0.957, data_time: 0.793, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:43:44,440 - mmpose - INFO - Epoch [93][100/204]	lr: 1.000e-07, eta: 0:22:43, time: 0.891, data_time: 0.728, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:44:29,448 - mmpose - INFO - Epoch [93][150/204]	lr: 1.000e-07, eta: 0:21:58, time: 0.900, data_time: 0.737, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:45:14,752 - mmpose - INFO - Epoch [93][200/204]	lr: 1.000e-07, eta: 0:21:14, time: 0.906, data_time: 0.743, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:46:04,802 - mmpose - INFO - Epoch [94][50/204]	lr: 1.000e-07, eta: 0:20:26, time: 0.940, data_time: 0.777, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:46:47,593 - mmpose - INFO - Epoch [94][100/204]	lr: 1.000e-07, eta: 0:19:41, time: 0.856, data_time: 0.693, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:47:24,385 - mmpose - INFO - Epoch [94][150/204]	lr: 1.000e-07, eta: 0:18:56, time: 0.736, data_time: 0.573, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:48:00,838 - mmpose - INFO - Epoch [94][200/204]	lr: 1.000e-07, eta: 0:18:11, time: 0.729, data_time: 0.565, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:48:50,817 - mmpose - INFO - Epoch [95][50/204]	lr: 1.000e-07, eta: 0:17:23, time: 0.952, data_time: 0.789, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:49:34,129 - mmpose - INFO - Epoch [95][100/204]	lr: 1.000e-07, eta: 0:16:39, time: 0.866, data_time: 0.704, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:50:19,316 - mmpose - INFO - Epoch [95][150/204]	lr: 1.000e-07, eta: 0:15:54, time: 0.904, data_time: 0.741, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:51:04,674 - mmpose - INFO - Epoch [95][200/204]	lr: 1.000e-07, eta: 0:15:10, time: 0.907, data_time: 0.743, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:52:09,407 - mmpose - INFO - Epoch(val) [95][204]	AP: 0.1712, AP .5: 0.5202, AP .75: 0.0519, AP (M): 0.1091, AP (L): 0.2978, AR: 0.2927, AR .5: 0.6667, AR .75: 0.2152, AR (M): 0.1669, AR (L): 0.3912
+2022-09-28 06:52:57,557 - mmpose - INFO - Epoch [96][50/204]	lr: 1.000e-07, eta: 0:14:22, time: 0.963, data_time: 0.799, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:53:41,446 - mmpose - INFO - Epoch [96][100/204]	lr: 1.000e-07, eta: 0:13:37, time: 0.878, data_time: 0.715, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:54:24,470 - mmpose - INFO - Epoch [96][150/204]	lr: 1.000e-07, eta: 0:12:53, time: 0.860, data_time: 0.698, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:55:09,303 - mmpose - INFO - Epoch [96][200/204]	lr: 1.000e-07, eta: 0:12:08, time: 0.897, data_time: 0.734, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:55:54,899 - mmpose - INFO - Epoch [97][50/204]	lr: 1.000e-07, eta: 0:11:20, time: 0.857, data_time: 0.693, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 06:56:38,388 - mmpose - INFO - Epoch [97][100/204]	lr: 1.000e-07, eta: 0:10:36, time: 0.870, data_time: 0.707, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:57:23,620 - mmpose - INFO - Epoch [97][150/204]	lr: 1.000e-07, eta: 0:09:51, time: 0.905, data_time: 0.742, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:58:08,689 - mmpose - INFO - Epoch [97][200/204]	lr: 1.000e-07, eta: 0:09:07, time: 0.901, data_time: 0.738, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:58:59,623 - mmpose - INFO - Epoch [98][50/204]	lr: 1.000e-07, eta: 0:08:19, time: 0.957, data_time: 0.794, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 06:59:44,814 - mmpose - INFO - Epoch [98][100/204]	lr: 1.000e-07, eta: 0:07:35, time: 0.904, data_time: 0.741, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 07:00:30,302 - mmpose - INFO - Epoch [98][150/204]	lr: 1.000e-07, eta: 0:06:50, time: 0.910, data_time: 0.747, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 07:01:15,851 - mmpose - INFO - Epoch [98][200/204]	lr: 1.000e-07, eta: 0:06:06, time: 0.911, data_time: 0.748, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 07:02:06,904 - mmpose - INFO - Epoch [99][50/204]	lr: 1.000e-07, eta: 0:05:18, time: 0.961, data_time: 0.797, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 07:02:45,324 - mmpose - INFO - Epoch [99][100/204]	lr: 1.000e-07, eta: 0:04:33, time: 0.768, data_time: 0.604, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0000, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 07:03:29,319 - mmpose - INFO - Epoch [99][150/204]	lr: 1.000e-07, eta: 0:03:49, time: 0.880, data_time: 0.717, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 07:04:14,351 - mmpose - INFO - Epoch [99][200/204]	lr: 1.000e-07, eta: 0:03:04, time: 0.901, data_time: 0.737, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 07:05:05,533 - mmpose - INFO - Epoch [100][50/204]	lr: 1.000e-07, eta: 0:02:16, time: 0.963, data_time: 0.800, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 07:05:51,352 - mmpose - INFO - Epoch [100][100/204]	lr: 1.000e-07, eta: 0:01:32, time: 0.916, data_time: 0.753, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 07:06:36,701 - mmpose - INFO - Epoch [100][150/204]	lr: 1.000e-07, eta: 0:00:47, time: 0.907, data_time: 0.744, memory: 2670, heatmap_loss: 0.0002, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0003
+2022-09-28 07:07:20,200 - mmpose - INFO - Epoch [100][200/204]	lr: 1.000e-07, eta: 0:00:03, time: 0.870, data_time: 0.707, memory: 2670, heatmap_loss: 0.0003, push_loss: 0.0001, pull_loss: 0.0000, loss: 0.0004
+2022-09-28 07:07:22,977 - mmpose - INFO - Saving checkpoint at 100 epochs
+2022-09-28 07:08:24,621 - mmpose - INFO - Epoch(val) [100][204]	AP: 0.1832, AP .5: 0.5559, AP .75: 0.0536, AP (M): 0.1102, AP (L): 0.3281, AR: 0.3037, AR .5: 0.6955, AR .75: 0.2231, AR (M): 0.1728, AR (L): 0.4062
