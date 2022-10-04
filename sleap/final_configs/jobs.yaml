@@ -1,0 +1,12 @@
+inference:
+- data_path: 305_labeled_frames_in_4_videos.slp
+  models:
+  - /home/alras16/sleap_training_data/models/train_on_1017_labeled_frames_using_sgd_optimizer220930_101241.multi_instance
+  only_suggested_frames: true
+  output_path: 305_labeled_frames_in_4_videos.slp.predictions.slp
+  tracking: {}
+  type: labels
+training:
+- cfg: multi_instance.json
+  run_path: /home/alras16/sleap_training_data/models/train_on_1017_labeled_frames_using_sgd_optimizer220930_101241.multi_instance
+  train_labels: 305_labeled_frames_in_4_videos.slp
